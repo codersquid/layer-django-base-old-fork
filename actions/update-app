@@ -47,28 +47,10 @@ DIRS_TO_KEEP = 5
 
 
 def gen_sha_for_current_commit(directory):
-    with chdir(directory):
-        p = Popen(["git", "rev-parse", "HEAD"],
-                  stdout=PIPE, stderr=PIPE)
-        stdout, stderr = p.communicate()
-    return stdout.decode().strip("'")
- 
-
-def gen_short_sha_for_current_commit(directory):
-    """Returns the short sha for the current commit
-    """
-    with chdir(directory):
-        p = Popen(["git", "log", "--pretty=format:'%h'", "-n 1"],
-                  stdout=PIPE, stderr=PIPE)
-        stdout, stderr = p.communicate()
-    return stdout.decode().strip("'")
-
-
-def gen_sha_for_current_commit(directory):
     """Returns the sha for the current commit
     """
     with chdir(directory):
-        p = Popen(["git", "rev-parse", "HEAD"],
+        p = Popen(["git", "rev-parse", "--short", "HEAD"],
                   stdout=PIPE, stderr=PIPE)
         stdout, stderr = p.communicate()
     return stdout.decode().strip("'")
@@ -192,7 +174,7 @@ if __name__ == "__main__":
         log("maintenance - Cleaning up previous deploys")
         cleanup_deploys()
 
-        sha_short = gen_short_sha_for_current_commit(APP_CURRENT)
+        sha_short = gen_sha_for_current_commit(APP_CURRENT)
         status_set('active', "Application updated to SHA: %s" % sha_short)
         log("active - Application updated to SHA: %s" % sha_short)
 
